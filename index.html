@@ -11,7 +11,7 @@
             position: fixed; /* 画面スクロールしても固定 */
             right: -5px; /* さらに右へ */
             top: 80%; /* 画面中央に固定 */
-            transform: translateY(-50%) translateX(20px); /* 中央配置と右ずらし */
+            transform: translateY(-50%) translateX(13px); /* 中央配置と右ずらし */
             background: #7e6c86;
             display: flex;
             flex-direction: column;
@@ -173,6 +173,9 @@
         }
 
         .visit-buttons,
+        .Desiredtime1-buttons,
+        .Desiredtime2-buttons,
+        .Desiredtime3-buttons,
         .second-buttons,
         .long-buttons,
         .shampoo-buttons,
@@ -186,6 +189,9 @@
         }
 
         .visit-buttons button,
+        .Desiredtime1-buttons button,
+        .Desiredtime2-buttons button,
+        .Desiredtime3-buttons button,
         .symptoms button,
         .long-buttons button,
         .shampoo-buttons button,
@@ -204,6 +210,9 @@
         }
 
         .visit-buttons button.active,
+        .Desiredtime1-buttons button.active,
+        .Desiredtime2-buttons button.active,
+        .Desiredtime3-buttons button.active,
         .symptoms button.active,
         .long-buttons button.active,
         .shampoo-buttons button.active,
@@ -749,6 +758,23 @@
     outline: none;
 }
 
+        .labelContent {
+            display: block;
+            margin-top: 10px;     
+            margin-bottom: 10px;
+            padding: 3px;
+            font-weight: 600;
+            background-color: #7e6c86;
+            color: white;
+            border-radius: 6px;
+            font-size: 18px;
+            text-align: center;
+            /* 中央揃え */
+            text-indent: 0px;
+            /* テキストを右に20pxずらす */
+            position: relative;
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -890,34 +916,55 @@
         </div>
 
         <div class="highlight-background">
-            <div class="label">希望日時<span class="required">必須</span></div>
+            <div class="labelContent">希望日時</div>
         </div>
 
         <!-- カスタム placeholder 表示用 -->
         <div class="datetime-wrapper" style="text-align: center;">
             <span class="placeholder" id="placeholder1">⇩タップして日時を入力⇩</span>
-            <input type="datetime-local" id="date1" class="datetime-input" placeholder=" " aria-label="タップして日時を入力">
+            <input type="date" id="date1" class="datetime-input" placeholder=" " aria-label="タップして日時を入力">
+        </div>
+
+        <div class="labelContent">希望時間1</div>
+        <div class="Desiredtime1-buttons">
+            <button type="button" id="firstDesiredtime1" onclick="selectDesiredtime1(this)">午前</button>
+            <button type="button" id="repeatDesiredtime1" onclick="selectDesiredtime1(this)">午後</button>
+            <button type="button" id="sanDesiredtime1" onclick="selectDesiredtime1(this)">希望無し</button>
         </div>
 
         <div class="highlight-background">
-            <span class="highlight-text">第2希望日※必須</span>
+            <span class="highlight-text">第2希望日</span>
         </div>
 
         <!-- カスタム placeholder 表示用 -->
         <div class="datetime-wrapper" style="text-align: center;">
             <span class="placeholder" id="placeholder2">⇩タップして日時を入力⇩</span>
-            <input type="datetime-local" id="date2" class="datetime-input" placeholder=" " aria-label="タップして日時を入力">
+            <input type="date" id="date2" class="datetime-input" placeholder=" " aria-label="タップして日時を入力">
+        </div>
+
+        <div class="labelContent">希望時間2</div>
+        <div class="Desiredtime2-buttons">
+            <button type="button" id="firstDesiredtime2" onclick="selectDesiredtime2(this)">午前</button>
+            <button type="button" id="repeatDesiredtime2" onclick="selectDesiredtime2(this)">午後</button>
+            <button type="button" id="sanDesiredtime2" onclick="selectDesiredtime2(this)">希望無し</button>
         </div>
 
         <div class="highlight-background">
-            <span class="highlight-text">第3希望日※任意</span>
+            <span class="highlight-text">第3希望日</span>
         </div>
 
         <!-- カスタム placeholder 表示用 -->
         <div class="datetime-wrapper" style="text-align: center;">
             <span class="placeholder" id="placeholder3">⇩タップして日時を入力⇩</span>
-            <input type="datetime-local" id="date3" class="datetime-input" placeholder=" " aria-label="タップして日時を入力">
+            <input type="date" id="date3" class="datetime-input" placeholder=" " aria-label="タップして日時を入力">
             <span class="datetime-placeholder">.</span>
+        </div>
+
+        <div class="labelContent">希望時間3</div>
+        <div class="Desiredtime3-buttons">
+            <button type="button" id="firstDesiredtime3" onclick="selectDesiredtime3(this)">午前</button>
+            <button type="button" id="repeatDesiredtime3" onclick="selectDesiredtime3(this)">午後</button>
+            <button type="button" id="sanDesiredtime3" onclick="selectDesiredtime3(this)">希望無し</button>
         </div>
 
         <div class="label">メッセージ<br>（質問等お気軽にご記入ください）</div>
@@ -929,6 +976,9 @@
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     <script>
         let visitCount = '';
+        let Desiredtime1Count = '';
+        let Desiredtime2Count = '';
+        let Desiredtime3Count = '';
         let secondsecondanniversaryCount = '';
         let secondlongCount = '';
         let secondshampooCount = '';
@@ -1202,6 +1252,63 @@ if (treatmentId === 'treatment1') {
             // 表示を更新
             updateDisplayInfo();
         }
+        
+        function selectDesiredtime1(element) {
+            // 選択された日時をリセット
+            selectedFullDate = '';
+
+            document.getElementById('firstDesiredtime1').classList.remove('active');
+            document.getElementById('repeatDesiredtime1').classList.remove('active');
+            document.getElementById('sanDesiredtime1').classList.remove('active');
+            element.classList.add('active');
+            Desiredtime1Count = element.innerText;
+
+            // 選択された訪問回数に対応する時間を取得
+            selectedDesiredtime1Time = Desiredtime1Times[Desiredtime1Count];
+
+            console.log('選択された訪問回数の時間:', selectedDesiredtime1Time);
+
+            // カレンダーを更新するために取得する日付を渡す
+            fetchAvailability(currentDate);
+        }
+
+        function selectDesiredtime2(element) {
+            // 選択された日時をリセット
+            selectedFullDate = '';
+
+            document.getElementById('firstDesiredtime2').classList.remove('active');
+            document.getElementById('repeatDesiredtime2').classList.remove('active');
+            document.getElementById('sanDesiredtime2').classList.remove('active');
+            element.classList.add('active');
+            Desiredtime2Count = element.innerText;
+
+            // 選択された訪問回数に対応する時間を取得
+            selectedDesiredtime2Time = Desiredtime2Times[Desiredtime2Count];
+
+            console.log('選択された訪問回数の時間:', selectedDesiredtime2Time);
+
+            // カレンダーを更新するために取得する日付を渡す
+            fetchAvailability(currentDate);
+        }
+
+        function selectDesiredtime3(element) {
+            // 選択された日時をリセット
+            selectedFullDate = '';
+
+            document.getElementById('firstDesiredtime3').classList.remove('active');
+            document.getElementById('repeatDesiredtime3').classList.remove('active');
+            document.getElementById('sanDesiredtime3').classList.remove('active');
+            element.classList.add('active');
+            Desiredtime3Count = element.innerText;
+
+            // 選択された訪問回数に対応する時間を取得
+            selectedDesiredtime3Time = Desiredtime3Times[Desiredtime3Count];
+
+            console.log('選択された訪問回数の時間:', selectedDesiredtime3Time);
+
+            // カレンダーを更新するために取得する日付を渡す
+            fetchAvailability(currentDate);
+        }
 
         function selectirradiations(button) {
             // ボタンの選択状態を切り替える
@@ -1463,6 +1570,9 @@ if (treatmentId === 'treatment1') {
                 name: document.getElementById('name').value,
                 phone: document.getElementById('phone').value,
                 visitCount: visitCount,
+                Desiredtime1Count: Desiredtime1Count,
+                Desiredtime2Count: Desiredtime2Count,
+                Desiredtime3Count: Desiredtime3Count,
                 selectedSymptom: selectedSymptom,
                 secondsecondanniversaryCount: secondsecondanniversaryCount,
                 secondlongCount: secondlongCount,
@@ -1485,7 +1595,7 @@ if (treatmentId === 'treatment1') {
             // LINEトークにメッセージを送信
             liff.sendMessages([{
                 type: 'text',
-                text: `【予約フォーム】\nお名前：${formData.name}\n電話番号：${formData.phone}\n\n≪メニュー項目≫\n⇒${formData.visitCount}\n≪メニュー≫\n⇒${formData.selectedSymptom}\n\n≪オフ有り≫：${formData.secondsecondanniversaryCount}\n≪長さだし≫：${formData.secondlongCount}\n≪アイシャンプー≫：${formData.secondshampooCount}\n\n【希望日時】\n・第一希望日\n${formatDate(formData.dates[0])}\n\n・第二希望日\n${formatDate(formData.dates[1])}\n\n・第三希望日\n${formatDate(formData.dates[2])}\nメッセージ：${formData.message}`
+                text: `【予約フォーム】\nお名前：${formData.name}\n電話番号：${formData.phone}\n\n≪メニュー項目≫\n⇒${formData.visitCount}\n≪メニュー≫\n⇒${formData.selectedSymptom}\n\n≪オフ有り≫：${formData.secondsecondanniversaryCount}\n≪長さだし≫：${formData.secondlongCount}\n≪アイシャンプー≫：${formData.secondshampooCount}\n\n【希望日時】\n・第一希望日\n${formatDate(formData.dates[0])}\n希望時間1：${formData.Desiredtime1Count}\n\n・第二希望日\n${formatDate(formData.dates[1])}\n希望時間2：${formData.Desiredtime2Count}\n\n・第三希望日\n${formatDate(formData.dates[2])}\n希望時間3：${formData.Desiredtime3Count}\n\nメッセージ：${formData.message}`
             }]).then(() => {
                 /* メッセージ送信成功時の処理 */
                 alert('当日キャンセルは無いようにお願いいたします。キャンセル料発生いたします。');
